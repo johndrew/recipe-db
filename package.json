@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "firebase-admin": "^7.0.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.3"
+  },
+  "scripts": {
+    "serve": "firebase deploy"
+  }
+}
