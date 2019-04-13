@@ -1,27 +1,49 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const { listDb } = require('./src/controllers/listDb');
-const { addRecipe, bulkAddRecipe } = require('./src/controllers/addRecipe');
+const { addRecipes } = require('./src/controllers/addRecipe');
 
 // TODO: create a config file that each call like this can inject
 admin.initializeApp();
 
-// exports.listDb = functions.https.onRequest((req, res) => {
-    
-//     listDb(admin)
-//         .then(data => {
+exports.listDb = functions.https.onRequest((req, res) => {
 
-//             console.log('Responding with recipes.');
-//             return res.send(data);
-//         })
-//         .catch(e => {
+    console.log('Request received. Retrieving recipes');
+    listDb(admin)
+        .then(data => {
+
+            console.log('Responding with recipes.');
+            return res.send(data);
+        })
+        .catch(e => {
             
-//             console.log('Error.', e);
-//             res.status(500).send(e.message);
-//             return;
-//         });
-// });
-// exports.addRecipe = functions.https.onRequest(addRecipe);
+            console.log('Failed to get recipes.', e);
+            res.status(500).send(e.message);
+            return;
+        });
+});
+exports.addRecipe = functions.https.onRequest((req, res) => {
+
+    console.log('Request received. Validating input');
+    if (!req.body || !req.body.recipe) {
+
+        res.status(400).send({ status: 400, message: 'Error: missing recipe' });
+        return;
+    }
+    
+    console.log('Saving recipe', req.body.recipe);
+    addRecipes([ req.body.recipe ], admin)
+        .then(() => {
+            
+            res.send({ status: 200, message: 'success' });
+            return;
+        })
+        .catch((err) => {
+
+            res.status(500).send({ status: 500, message: err.message });
+            return;
+        });
+});
 exports.bulkAddRecipe = functions.https.onRequest((req, res) => {
 
     console.log('Request received. Validating input');
@@ -32,7 +54,7 @@ exports.bulkAddRecipe = functions.https.onRequest((req, res) => {
     }
 
     console.log('Bulk savings recipes', req.body.recipes);
-    bulkAddRecipe(req.body.recipes, admin)
+    addRecipes(req.body.recipes, admin)
         .then(() => {
 
             res.send({ status: 200, message: 'success' });

@@ -2,8 +2,7 @@ const uuid = require('uuid/v4');
 const _ = require('lodash');
 
 module.exports = {
-    addRecipe: addRecipe,
-    bulkAddRecipe: bulkAddRecipe,
+    addRecipes: addRecipes,
 }
 
 /**
@@ -249,13 +248,7 @@ function processRecipes(recipes, db) {
  * @prop {String[]} ingredients
  */
 
-function addRecipe() {
-    
-    res.send('It works yo!');
-    return;
-}
-
-function bulkAddRecipe(recipes, admin) {
+function addRecipes(recipes, admin) {
 
     try {
         
@@ -266,7 +259,7 @@ function bulkAddRecipe(recipes, admin) {
         return processRecipes(recipes, db);
     } catch (e) {
         
-        console.error('Failed to add recipe', e);
+        console.error('Failed to add multiple recipes', e);
         return Promise.reject(e.message);
     }
 }
