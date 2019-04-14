@@ -6,6 +6,8 @@
     "babel-core": "^6.26.3"
   },
   "scripts": {
+    "start": "(cd client && yarn start)",
+    "build": "(cd client && yarn build)",
     "serve": "firebase deploy"
   }
 }

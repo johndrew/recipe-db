@@ -1,26 +1,29 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
+const cors = require('cors')({origin: true});
 const { listDb } = require('./src/controllers/listDb');
 const { addRecipes } = require('./src/controllers/addRecipe');
 
 // TODO: create a config file that each call like this can inject
 admin.initializeApp();
-
 exports.listDb = functions.https.onRequest((req, res) => {
 
-    console.log('Request received. Retrieving recipes');
-    listDb(admin)
-        .then(data => {
+    cors(req, res, () => {
 
-            console.log('Responding with recipes.');
-            return res.send(data);
-        })
-        .catch(e => {
-            
-            console.log('Failed to get recipes.', e);
-            res.status(500).send(e.message);
-            return;
-        });
+        console.log('Request received. Retrieving recipes');
+        listDb(admin)
+            .then(data => {
+
+                console.log('Responding with recipes.');
+                return res.send(JSON.stringify(data));
+            })
+            .catch(e => {
+                
+                console.log('Failed to get recipes.', e);
+                res.status(500).send(e.message);
+                return;
+            });
+    });
 });
 exports.addRecipe = functions.https.onRequest((req, res) => {
 
