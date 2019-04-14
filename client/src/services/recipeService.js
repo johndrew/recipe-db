@@ -16,7 +16,14 @@ class RecipeService {
                 'Content-Type': 'application/json',
             },
         })
-            .then(result => result.json())
+            .then((result) => {
+                
+                if (!result.ok) {
+
+                    return result.text().then(text => { throw new Error(text) })
+                }
+                return result.json();
+            })
             .then((data) => {
                 
                 this.recipes = _.sortBy(data, 'name');
