@@ -1,3 +1,5 @@
+const _ = require('lodash');
+
 class RecipeService {
 
     constructor() {
@@ -17,14 +19,13 @@ class RecipeService {
             .then(result => result.json())
             .then((data) => {
                 
-                this.recipes = data;
+                this.recipes = _.sortBy(data, 'name');
 
                 return this.recipes;
             })
             .catch((e) => {
                 
-                console.error('Could not get recipes', e);
-                return [];
+                throw new Error(`Could not get recipes: ${e.message}`);
             });
     }
 }

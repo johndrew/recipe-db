@@ -7,6 +7,25 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import * as reducers from './store/reducers';
 
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
+import {
+    blueGrey,
+    grey,
+    deepOrange,
+} from '@material-ui/core/colors';
+import CssBaseline from '@material-ui/core/CssBaseline';
+
+const theme = createMuiTheme({
+    palette: {
+        primary: blueGrey,
+        secondary: grey,
+        error: deepOrange,
+    },
+    typography: {
+        useNextVariants: true,
+    },
+});
+
 const store = createStore(
     combineReducers(reducers),
     applyMiddleware(thunk)
@@ -14,7 +33,10 @@ const store = createStore(
 
 ReactDOM.render(
     <Provider store={store}>
-        <App />
+        <MuiThemeProvider theme={theme}>
+            <CssBaseline />
+            <App />
+        </MuiThemeProvider>
     </Provider>,
     document.getElementById('root')
 );

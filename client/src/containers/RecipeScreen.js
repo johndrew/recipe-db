@@ -2,20 +2,18 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as recipeActions from '../store/recipes/actions';
 import * as recipeSelectors from '../store/recipes/reducer';
+import RecipeCard from '../components/RecipeCard/RecipeCard';
+import ErrorCard from '../components/ErrorCard/ErrorCard';
 
 class RecipeScreen extends Component {
 
-    constructor(props) {
-
-        super(props);
-        this.state = {};
-    }
-
     render() {
 
+        const { error_message, recipes } = this.props;
         return (
             <div className="recipeScreen__container">
-                {this.props.recipes.map(recipe => <p key={recipe.id}>{recipe.name}</p>)}
+                {!recipes.length && <ErrorCard message={error_message} />}
+                {recipes.length && recipes.map(recipe => <RecipeCard key={recipe.id} recipe={recipe} />)}
             </div>
         );
     }
@@ -29,6 +27,7 @@ class RecipeScreen extends Component {
 function mapStateToProps(state) {
     
     return {
+        error_message: recipeSelectors.getError(state),
         recipes: recipeSelectors.getPagedRecipes(state, 0, 10),
     }
 }

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import RecipeScreen from './containers/RecipeScreen';
 
-import './App.css';
+import './App.scss';
 
 class App extends Component {
 
