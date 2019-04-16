@@ -4,6 +4,7 @@ import * as recipeActions from '../store/recipes/actions';
 import * as recipeSelectors from '../store/recipes/reducer';
 import RecipeCard from '../components/RecipeCard/RecipeCard';
 import ErrorCard from '../components/ErrorCard/ErrorCard';
+import LoadingCard from '../components/LoadingCard/LoadingCard';
 
 class RecipeScreen extends Component {
 
@@ -12,7 +13,8 @@ class RecipeScreen extends Component {
         const { error_message, recipes } = this.props;
         return (
             <div className="recipeScreen__container">
-                {!recipes.length && <ErrorCard message={error_message} />}
+                {!recipes.length && <LoadingCard />}
+                {/* {!recipes.length && <ErrorCard message={error_message} />} */}
                 {recipes.length && recipes.map(recipe => <RecipeCard key={recipe.id} recipe={recipe} />)}
             </div>
         );
