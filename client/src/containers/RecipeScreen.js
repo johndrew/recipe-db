@@ -28,7 +28,7 @@ function mapStateToProps(state) {
     
     return {
         error_message: recipeSelectors.getError(state),
-        recipes: recipeSelectors.getPagedRecipes(state, 0, 10),
+        recipes: recipeSelectors.getAllRecipes(state),
     }
 }
 

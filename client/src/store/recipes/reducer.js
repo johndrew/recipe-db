@@ -17,9 +17,18 @@ export default function reduce(state = INITIAL_STATE, action = {}) {
 
 // SELECTORS
 
+export function getAllRecipes(state) {
+    
+    return state.recipes.get('recipes');
+}
+
 export function getPagedRecipes(state, start_index, end_index) {
 
-    return state.recipes.get('recipes').slice(start_index, end_index);
+    const recipes = state.recipes.get('recipes');
+    return {
+        total_count: recipes.length,
+        recipes: recipes.slice(start_index, end_index),
+    };
 }
 
 export function getError(state) {
