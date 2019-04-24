@@ -3,6 +3,7 @@ const admin = require('firebase-admin');
 const cors = require('cors')({origin: true});
 const { listDb } = require('./src/controllers/listDb');
 const { addRecipes } = require('./src/controllers/addRecipe');
+const { action: loginAction, validate: loginValidate } = require('./src/controllers/login');
 
 // TODO: create a config file that each call like this can inject
 admin.initializeApp();
@@ -68,6 +69,37 @@ exports.bulkAddRecipe = functions.https.onRequest((req, res) => {
             res.status(500).send({ status: 500, message: err.message });
             return;
         });
+});
+
+/**
+ * Authenticates a user
+ */
+exports.login = functions.https.onRequest((req, res) => {
+
+    // NOTE: The format of this function is a trial of the prototype mentioned below
+    console.log('Request received. Validating input');
+    try {
+        
+        loginValidate(req);
+    } catch (e) {
+        
+        console.error(e);
+        res.status(400).send({ status: 400, message: e.message });
+        return;
+    }
+
+    try {
+        
+        // TODO: see what is returned
+        const result = loginAction(req);
+        res.send({ status: 200, message: 'Success', result, });
+        return;
+    } catch (e) {
+        
+        console.error(e);
+        res.status(500).send({ status: 500, message: e.message });
+        return;
+    }
 });
 
 /**
