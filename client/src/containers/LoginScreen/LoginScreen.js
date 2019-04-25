@@ -1,7 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { Input, Button, Card } from '@material-ui/core';
 import Joi from 'joi';
+import * as userActions from '../../store/user/actions';
+import * as userSelectors from '../../store/user/reducer';
 import './LoginScreen.scss';
 
 class LoginScreen extends Component {
@@ -10,7 +12,6 @@ class LoginScreen extends Component {
 
         super(props);
         this.state = {
-            error: null,
             email: null,
             password: null,
         };
@@ -21,19 +22,24 @@ class LoginScreen extends Component {
         return (
             <Card
                 className="loginScreen__container">
-                {this.state.error && <h1>{this.state.error}</h1>}
-                <Input
-                    label="Email"
-                    onChange={this.handleEmail.bind(this)}
-                    value={this.state.email} />
-                <Input
-                    label="Password"
-                    onChange={this.handlePassword.bind(this)}
-                    value={this.state.password} />
-                <Button
-                    onClick={this.submit.bind(this)}>
-                    Submit
-                </Button>
+                {this.props.login_pending && <h1>Logging In. Please Wait.</h1>}
+                {!this.props.login_pending && this.props.error_message && <h1>{this.props.error_message}</h1>}
+                {!this.props.login_pending && 
+                    <Fragment>
+                        <Input
+                            label="Email"
+                            onChange={this.handleEmail.bind(this)}
+                            value={this.state.email} />
+                        <Input
+                            label="Password"
+                            onChange={this.handlePassword.bind(this)}
+                            value={this.state.password} />
+                        <Button
+                            onClick={this.submit.bind(this)}>
+                            Submit
+                        </Button>
+                    </Fragment>
+                }
             </Card>
         );
     }
@@ -75,13 +81,16 @@ class LoginScreen extends Component {
 
     submit() {
 
-        this.props.dispatch();
+        this.props.dispatch(userActions.login());
     }
 }
 
 function mapStateToProps(state) {
     
-    return {};
+    return {
+        error_message: userSelectors.getErrorMessage(state),
+        login_pending: userSelectors.loginPending(state),
+    };
 }
 
 export default connect(mapStateToProps)(LoginScreen);

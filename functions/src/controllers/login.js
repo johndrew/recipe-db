@@ -1,5 +1,7 @@
 const firebase = require('firebase');
+const admin = require('firebase-admin');
 const Joi = require('joi');
+const { app } = require('../config.json');
 
 module.exports = {
     action: action,
@@ -8,8 +10,17 @@ module.exports = {
 
 function action(req) {
 
+    console.log('Initializing app');
+    if (!firebase.apps.length) firebase.initializeApp(app);
+    if (!admin.apps.length) admin.initializeApp(app);
     const { email, password } = req.body;
-    return firebase.auth().signInWithEmailAndPassword(email, password);
+    console.log('Signing in with email and password');
+    return firebase.auth().signInWithEmailAndPassword(email, password)
+        .then((result) => {
+
+            console.log('Signed in with email and password. Generating session');
+            return admin.auth().createCustomToken(result.user.uid);
+        });
 }
 
 function validate(req) {

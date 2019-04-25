@@ -1,0 +1,10 @@
+{
+    "app": {
+        "apiKey": "AIzaSyCnUd5oQ6w3Zx6qgpoB0q-wGUeX6MfaHIM",
+        "authDomain": "recipedb-d75ba.firebaseapp.com",
+        "databaseURL": "https://recipedb-d75ba.firebaseio.com",
+        "projectId": "recipedb-d75ba",
+        "storageBucket": "recipedb-d75ba.appspot.com",
+        "messagingSenderId": "128794108266"
+    }
+}

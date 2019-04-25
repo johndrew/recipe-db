@@ -1,5 +1,7 @@
 const uuid = require('uuid/v4');
 const _ = require('lodash');
+const admin = require('firebase-admin');
+const { app } = require('../config.json');
 
 module.exports = {
     addRecipes: addRecipes,
@@ -248,11 +250,14 @@ function processRecipes(recipes, db) {
  * @prop {String[]} ingredients
  */
 
-function addRecipes(recipes, admin) {
+function addRecipes(recipes) {
 
     try {
         
         console.log('Loading db client.');
+        if (!admin.apps.length) {
+            admin.initializeApp(app);
+        }
         const db = admin.firestore();
 
         console.log('Processing recipes');

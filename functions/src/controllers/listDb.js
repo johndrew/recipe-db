@@ -1,4 +1,6 @@
 const _ = require('lodash');
+const admin = require('firebase-admin');
+const { app } = require('../config.json');
 
 module.exports = {
     listDb: listDb,
@@ -83,9 +85,12 @@ function getRecipe(document_snapshot, db) {
  * @prop {string} name
  * @prop {string} notes
  */
-function listDb(admin) {
+function listDb() {
 
     console.log('Request received. Loading db client.');
+    if (!admin.apps.length) {
+        admin.initializeApp(app);
+    }
     const db = admin.firestore();
 
     console.log('Retrieve recipes.');

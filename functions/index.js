@@ -1,18 +1,15 @@
 const functions = require('firebase-functions');
-const admin = require('firebase-admin');
 const cors = require('cors')({origin: true});
 const { listDb } = require('./src/controllers/listDb');
 const { addRecipes } = require('./src/controllers/addRecipe');
 const { action: loginAction, validate: loginValidate } = require('./src/controllers/login');
 
-// TODO: create a config file that each call like this can inject
-admin.initializeApp();
 exports.listDb = functions.https.onRequest((req, res) => {
 
     cors(req, res, () => {
 
         console.log('Request received. Retrieving recipes');
-        listDb(admin)
+        listDb()
             .then(data => {
 
                 console.log('Responding with recipes.');
@@ -36,7 +33,7 @@ exports.addRecipe = functions.https.onRequest((req, res) => {
     }
     
     console.log('Saving recipe', req.body.recipe);
-    addRecipes([ req.body.recipe ], admin)
+    addRecipes([ req.body.recipe ])
         .then(() => {
             
             res.send({ status: 200, message: 'success' });
@@ -58,7 +55,7 @@ exports.bulkAddRecipe = functions.https.onRequest((req, res) => {
     }
 
     console.log('Bulk savings recipes', req.body.recipes);
-    addRecipes(req.body.recipes, admin)
+    addRecipes(req.body.recipes)
         .then(() => {
 
             res.send({ status: 200, message: 'success' });
@@ -88,18 +85,19 @@ exports.login = functions.https.onRequest((req, res) => {
         return;
     }
 
-    try {
+    loginAction(req)
+        .then((token) => {
+
+            console.log('Successfully logged in');
+            res.send({ status: 200, message: 'Success', token });
+            return;
+        })
+        .catch((e) => {
         
-        // TODO: see what is returned
-        const result = loginAction(req);
-        res.send({ status: 200, message: 'Success', result, });
-        return;
-    } catch (e) {
-        
-        console.error(e);
-        res.status(500).send({ status: 500, message: e.message });
-        return;
-    }
+            console.error('Could not login', e);
+            res.status(500).send({ status: 500, message: JSON.stringify(e.message) });
+            return;
+        });
 });
 
 /**
